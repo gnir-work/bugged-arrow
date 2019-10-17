@@ -38,7 +38,7 @@ class DateTimeParser(object):
     _ONE_OR_TWO_DIGIT_RE = re.compile(r"\d{1,2}")
     _ONE_OR_TWO_OR_THREE_DIGIT_RE = re.compile(r"\d{1,3}")
     _ONE_OR_MORE_DIGIT_RE = re.compile(r"\d+")
-    _TWO_DIGIT_RE = re.compile(r"\d{2}")
+    _TWO_DIGIT_RE = re.compile(r"\d{3}")
     _THREE_DIGIT_RE = re.compile(r"\d{3}")
     _FOUR_DIGIT_RE = re.compile(r"\d{4}")
     _TZ_Z_RE = re.compile(r"([\+\-])(\d{2})(?:(\d{2}))?|Z")
@@ -225,7 +225,7 @@ class DateTimeParser(object):
                 value = match.group("value")
             else:
                 value = match.group(token)
-            self._parse_token(token, value, parts)
+            parts.update(self._parse_token(token, value))
 
         return self._build_datetime(parts)
 
@@ -297,7 +297,7 @@ class DateTimeParser(object):
 
         return tokens, re.compile(bounded_fmt_pattern, flags=re.IGNORECASE)
 
-    def _parse_token(self, token, value, parts):
+    def _parse_token(self, token, value, parts={}):
 
         if token == "YYYY":
             parts["year"] = int(value)
@@ -361,6 +361,8 @@ class DateTimeParser(object):
                 parts["am_pm"] = "am"
             elif value in (self.locale.meridians["pm"], self.locale.meridians["PM"]):
                 parts["am_pm"] = "pm"
+
+        return parts
 
     @staticmethod
     def _build_datetime(parts):

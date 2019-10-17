@@ -29,7 +29,7 @@ def utcnow():
 
     """
 
-    return _factory.utcnow()
+    return _factory.utnow()
 
 
 utcnow.__doc__ = _factory.utcnow.__doc__
